@@ -6,21 +6,21 @@ package:
   version: {{ version }}
 
 source:
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  url: https://pypi.org/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
   sha256: b699fcb1e60bb17e2c97007e444b89eeeea2a9102ff11d61fb52454af5348403
 
 build:
   noarch: python
   script: {{ PYTHON }} -m pip install . -vv --no-deps --no-build-isolation
-  number: 0
+  number: 1
 
 requirements:
   host:
-    - python >=3.7
+    - python {{ python_min }}
     - pip
     - poetry-core >=1.0.0
   run:
-    - python >=3.7
+    - python >={{ python_min }}
     - dropstackframe >=0.1.0
     - lark >=1.1.0
 
@@ -29,6 +29,7 @@ test:
     - check_shapes
   requires:
     - pip
+    - python {{ python_min }}
   commands:
     - pip check
     
@@ -39,11 +40,13 @@ outputs:
       noarch: python
     requirements:
       host:
-        - python >=3.7
+        - python {{ python_min }}
       run:
         - {{ pin_subpackage("check_shapes", max_pin="x.x.x") }}
-        - python >=3.7
+        - python >={{ python_min }}
     test:
+      requires:
+        - python {{ python_min }}
       imports:
         - check_shapes
 
